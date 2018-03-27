@@ -1,4 +1,4 @@
-version: '2'
+version: "3.5"
 
 services:
   inspect:
@@ -6,7 +6,26 @@ services:
     restart: always
     ports:
       - "80:8080"
-
     # Test used! To accelerate building process.
     volumes:
       - ./inspect.jar:/app.jar
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.6
+    restart: always
+    # Test used! Expose port to local machine to make management convenient.
+    ports:
+      - "3306:3306"
+    # Expose port to bond service in production system.
+    # expose:
+    #   - "3306"
+    volumes:
+      - ./mysqldb:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: inspectdb
+      # Test used! Default root password.
+      MYSQL_ROOT_PASSWORD: 123456
+      # Use Random password for root in production system.
+      # MYSQL_RANDOM_ROOT_PASSWORD: yes
