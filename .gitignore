@@ -1,5 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
+/src/main/docker/inspect.jar
 
 ### STS ###
 .apt_generated

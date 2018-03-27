@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  inspect:
+    image: grisw/inspect
+    restart: always
+    ports:
+      - "80:8080"
+
+    # Test used! To accelerate building process.
+    volumes:
+      - ./inspect.jar:/app.jar
