@@ -6,9 +6,6 @@ services:
     restart: always
     ports:
       - "80:8080"
-    # Test used! To accelerate building process.
-    volumes:
-      - ./inspect.jar:/app.jar
     depends_on:
       - mysql
 
