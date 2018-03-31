@@ -1,22 +1,23 @@
 package pers.sdulxt.inspect.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import pers.sdulxt.inspect.model.Constant;
 import pers.sdulxt.inspect.model.Response;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
 public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
+
+    private Log log;
 
     private final ErrorAttributes errorAttributes;
 
@@ -25,6 +26,10 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
     @Autowired
     public ErrorController(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes;
+
+        if(Constant.DEBUG){
+            log = LogFactory.getLog(getClass().getName());
+        }
     }
 
     @Override
@@ -33,13 +38,17 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
     }
 
     @RequestMapping(ERROR_PATH)
-    public Response<Map<String, Object>> error(HttpServletRequest request, HttpServletResponse response){
-        Map<String,Object> errorAttributes = getErrorAttributes(request, Constant.DEBUG);
-        return new Response<>(Response.Code.UNKNOWN_ERROR, errorAttributes);
+    public Response<Map<String, Object>> error(HttpServletRequest request){
+        if(log != null){
+            Map<String,Object> errorAttributes = getErrorAttributes(request);
+            log.error(errorAttributes);
+        }
+
+        return new Response<>(Response.Code.UNKNOWN_ERROR);
     }
 
-    private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
+    private Map<String, Object> getErrorAttributes(HttpServletRequest request) {
         WebRequest requestAttributes = new ServletWebRequest(request);
-        return errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace);
+        return errorAttributes.getErrorAttributes(requestAttributes, true);
     }
 }

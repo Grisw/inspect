@@ -7,4 +7,8 @@ public interface Constant {
      */
     boolean DEBUG = true;
 
+    /**
+     * Token expire time (In seconds).
+     */
+    int TOKEN_EXPIRE = 5 * 60;
 }

@@ -14,7 +14,9 @@ public class Response<T> implements Serializable{
      */
     public enum Code{
         SUCCESS(0, "Success."),
-        UNKNOWN_ERROR(-1, "Unknown error.");
+        UNKNOWN_ERROR(-1, "Unknown error."),
+        WRONG_CREDENTIALS(11, "Wrong password or non-existent account."),
+        PARAMS_REQUIRED(100, "Some required parameters not found.");
 
         private int code;
         private String message;
@@ -52,10 +54,16 @@ public class Response<T> implements Serializable{
     private String message;
     private T body;
 
-    public Response(Code code, T body) {
+    public Response(T body) {
+        this.code = Code.SUCCESS.getCode();
+        this.message = Code.SUCCESS.getMessage();
+        this.body = body;
+    }
+
+    public Response(Code code) {
         this.code = code.getCode();
         this.message = code.getMessage();
-        this.body = body;
+        this.body = null;
     }
 
     public int getCode() {
