@@ -10,10 +10,7 @@ import pers.sdulxt.inspect.model.Constant;
 import pers.sdulxt.inspect.model.Token;
 import pers.sdulxt.inspect.util.MD5Utils;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class TokenService {
@@ -50,6 +47,22 @@ public class TokenService {
 
         log.info("Login: " + phoneNumber + "|" + tokenString);
         return tokenString;
+    }
+
+    /**
+     * Check if a token is valid.
+     * @param phoneNumber Phone number.
+     * @param tokenString Token.
+     * @return True if the token is valid. False otherwise.
+     */
+    public boolean checkValidity(String phoneNumber, String tokenString){
+        Token token = tokens.get(phoneNumber);
+        if(token != null && token.getToken().equals(tokenString) && token.getExpire().after(new Date())){
+            return true;
+        }else{
+            tokens.remove(phoneNumber);
+            return false;
+        }
     }
 
     /**

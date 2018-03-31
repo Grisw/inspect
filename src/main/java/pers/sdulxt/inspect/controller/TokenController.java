@@ -1,10 +1,7 @@
 package pers.sdulxt.inspect.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.sdulxt.inspect.model.Response;
 import pers.sdulxt.inspect.service.TokenService;
 import pers.sdulxt.inspect.util.ValidateUtils;
@@ -38,5 +35,19 @@ public class TokenController {
             return new Response<>(Response.Code.WRONG_CREDENTIALS);
         else
             return new Response<>(token);
+    }
+
+    @GetMapping
+    public Response<Boolean> checkToken(@RequestParam String phoneNumber,@RequestParam String token){
+        // Validating
+        if(ValidateUtils.checkNull(phoneNumber, token)){
+            return new Response<>(Response.Code.PARAMS_REQUIRED);
+        }
+
+        // Processing
+        if(tokenService.checkValidity(phoneNumber, token))
+            return new Response<>(true);
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
     }
 }
