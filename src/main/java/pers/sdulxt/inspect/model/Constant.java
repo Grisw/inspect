@@ -10,5 +10,5 @@ public interface Constant {
     /**
      * Token expire time (In seconds).
      */
-    int TOKEN_EXPIRE = 5 * 60;
+    int TOKEN_EXPIRE = 30 * 60;
 }

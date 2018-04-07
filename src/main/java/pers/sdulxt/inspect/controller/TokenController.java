@@ -37,17 +37,4 @@ public class TokenController {
             return new Response<>(token);
     }
 
-    @GetMapping
-    public Response<Boolean> checkToken(@RequestParam String phoneNumber,@RequestParam String token){
-        // Validating
-        if(ValidateUtils.checkNull(phoneNumber, token)){
-            return new Response<>(Response.Code.PARAMS_REQUIRED);
-        }
-
-        // Processing
-        if(tokenService.checkValidity(phoneNumber, token))
-            return new Response<>(true);
-        else
-            return new Response<>(Response.Code.TOKEN_EXPIRED);
-    }
 }
