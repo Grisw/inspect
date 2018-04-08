@@ -22,14 +22,17 @@ public class UserController {
     }
 
     @GetMapping
-    public Response<UserEntity> getUser(@RequestParam String phoneNumber, @RequestHeader("X-INSPECT-TOKEN") String token){
+    public Response<UserEntity> getUser(@RequestParam String phoneNumber, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
         // Validating
-        if(ValidateUtils.checkNull(phoneNumber, token)){
+        if(ValidateUtils.checkNull(phoneNumber)){
             return new Response<>(Response.Code.PARAMS_REQUIRED);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
         }
 
         // Check token
-        if(tokenService.checkValidity(phoneNumber, token))
+        if(tokenService.checkValidity(pn, token))
             return new Response<>(userService.getUser(phoneNumber));
         else
             return new Response<>(Response.Code.TOKEN_EXPIRED);

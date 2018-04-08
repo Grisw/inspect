@@ -12,6 +12,7 @@ import pers.sdulxt.inspect.model.Constant;
 import pers.sdulxt.inspect.model.Response;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
@@ -38,10 +39,17 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
     }
 
     @RequestMapping(ERROR_PATH)
-    public Response<Map<String, Object>> error(HttpServletRequest request){
+    public Response<Void> error(HttpServletRequest request, HttpServletResponse response){
         if(log != null){
             Map<String,Object> errorAttributes = getErrorAttributes(request);
             log.error(errorAttributes);
+        }
+
+        switch (response.getStatus()){
+            case 400:
+                return new Response<>(Response.Code.PARAMS_REQUIRED);
+            case 404:
+                return new Response<>(Response.Code.UNKNOWN_REQUEST);
         }
 
         return new Response<>(Response.Code.UNKNOWN_ERROR);

@@ -13,11 +13,12 @@ public class Response<T> implements Serializable{
      * Use static method {@code getCode} to find the specific code enumeration by status number.
      */
     public enum Code{
-        SUCCESS(0, "Success."),
         UNKNOWN_ERROR(-1, "Unknown error."),
+        SUCCESS(0, "Success."),
         WRONG_CREDENTIALS(11, "Wrong password or non-existent account."),
+        PARAMS_REQUIRED(100, "Some required parameters not found."),
         TOKEN_EXPIRED(200, "The token is expired, requires login."),
-        PARAMS_REQUIRED(100, "Some required parameters not found.");
+        UNKNOWN_REQUEST(300, "Unknown request.");
 
         private int code;
         private String message;
