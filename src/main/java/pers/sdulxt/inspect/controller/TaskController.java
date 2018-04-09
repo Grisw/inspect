@@ -9,6 +9,7 @@ import pers.sdulxt.inspect.service.TokenService;
 import pers.sdulxt.inspect.util.ValidateUtils;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/task")
@@ -24,24 +25,7 @@ public class TaskController {
     }
 
     @GetMapping
-    public Response<List<TaskEntity>> getTasks(@RequestParam String assignee, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
-        // Validating
-        if(ValidateUtils.checkNull(assignee)){
-            return new Response<>(Response.Code.PARAMS_REQUIRED);
-        }
-        if(ValidateUtils.checkNull(pn, token)){
-            return new Response<>(Response.Code.TOKEN_EXPIRED);
-        }
-
-        // Check token
-        if(tokenService.checkValidity(pn, token))
-            return new Response<>(taskService.getTasks(assignee));
-        else
-            return new Response<>(Response.Code.TOKEN_EXPIRED);
-    }
-
-    @GetMapping("/count")
-    public Response<Integer> getTasksCount(@RequestParam String assignee, @RequestParam TaskEntity.State state, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+    public Response<List<TaskEntity>> getTasks(@RequestParam String assignee, @RequestParam TaskEntity.State state, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
         // Validating
         if(ValidateUtils.checkNull(assignee, state)){
             return new Response<>(Response.Code.PARAMS_REQUIRED);
@@ -52,7 +36,24 @@ public class TaskController {
 
         // Check token
         if(tokenService.checkValidity(pn, token))
-            return new Response<>(taskService.getTasksCount(assignee, state));
+            return new Response<>(taskService.getTasks(assignee, state));
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+    }
+
+    @GetMapping("/count")
+    public Response<Map<TaskEntity.State, Long>> getTasksCount(@RequestParam String assignee, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        // Validating
+        if(ValidateUtils.checkNull(assignee)){
+            return new Response<>(Response.Code.PARAMS_REQUIRED);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token))
+            return new Response<>(taskService.getTasksCount(assignee));
         else
             return new Response<>(Response.Code.TOKEN_EXPIRED);
     }

@@ -8,7 +8,9 @@ import pers.sdulxt.inspect.entity.TaskEntity;
 import pers.sdulxt.inspect.mapper.TaskMapper;
 import pers.sdulxt.inspect.model.Constant;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TaskService {
@@ -24,21 +26,31 @@ public class TaskService {
     }
 
     /**
-     * Get tasks assigned to the user
+     * Get tasks assigned to the user by tasks' state.
      * @param assignee Phone number of the user.
+     * @param state The query state.
      * @return The task list, guarantee not null.
      */
-    public List<TaskEntity> getTasks(String assignee){
-        return taskMapper.getTasksByAssignee(assignee);
+    public List<TaskEntity> getTasks(String assignee, TaskEntity.State state){
+        return taskMapper.getTasksByAssignee(assignee, state.toString());
     }
 
     /**
-     * Get tasks count assigned to the user by tasks' state.
+     * Get tasks count assigned to the user.
      * @param assignee Phone number of the user.
-     * @param state The query state.
-     * @return The count of tasks.
+     * @return The count of tasks in each state.
      */
-    public int getTasksCount(String assignee, TaskEntity.State state){
-        return taskMapper.getTasksCountByState(assignee, state.toString());
+    public Map<TaskEntity.State, Long> getTasksCount(String assignee){
+        List<Map<String, Object>> data = taskMapper.getTaskCountByAssignee(assignee);
+        Map<TaskEntity.State, Long> result = new HashMap<>();
+        for (Map<String, Object> row : data){
+            result.put(TaskEntity.State.valueOf((String) row.get("state")), (Long) row.get("count"));
+        }
+        for(TaskEntity.State state : TaskEntity.State.values()){
+            if(!result.containsKey(state)){
+                result.put(state, 0L);
+            }
+        }
+        return result;
     }
 }

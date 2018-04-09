@@ -22,6 +22,7 @@ public class UserEntity {
     private String name;
     private String email;
     private String leader;
+    private String leaderName;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -69,6 +70,14 @@ public class UserEntity {
 
     public void setLeader(String leader) {
         this.leader = leader;
+    }
+
+    public String getLeaderName() {
+        return leaderName;
+    }
+
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
     }
 
 }
