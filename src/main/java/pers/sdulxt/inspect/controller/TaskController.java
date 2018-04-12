@@ -11,10 +11,7 @@ import pers.sdulxt.inspect.util.ValidateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/task")
@@ -97,7 +94,7 @@ public class TaskController {
         String assignee = (String) params.get("assignee");
         Date dueTime;
         try {
-            dueTime = params.get("dueTime") == null ? null : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse((String) params.get("dueTime"));
+            dueTime = params.get("dueTime") == null ? null : new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).parse((String) params.get("dueTime"));
         } catch (ParseException e) {
             return new Response<>(Response.Code.PARAMS_ERROR);
         }
