@@ -1,8 +1,6 @@
 package pers.sdulxt.inspect.mapper;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 import pers.sdulxt.inspect.entity.TaskEntity;
 
@@ -29,4 +27,8 @@ public interface TaskMapper {
 
     @Update("update task set assignee=#{assignee} where id=#{id}")
     void updateAssignee(@Param("id") int id, @Param("assignee") String assignee);
+
+    @Insert("insert into task (`title`, `description`, `assignee`, `dueTime`, `creator`) values (#{title}, #{description}, #{assignee}, #{dueTime}, #{creator})")
+    @Options(useGeneratedKeys = true)
+    void insertTask(TaskEntity task);
 }

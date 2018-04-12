@@ -8,6 +8,8 @@ import pers.sdulxt.inspect.entity.UserEntity;
 import pers.sdulxt.inspect.mapper.UserMapper;
 import pers.sdulxt.inspect.model.Constant;
 
+import java.util.List;
+
 @Service
 public class UserService {
     private final UserMapper userMapper;
@@ -28,5 +30,9 @@ public class UserService {
      */
     public UserEntity getUser(String phoneNumber){
         return userMapper.getUserByPhoneNumber(phoneNumber);
+    }
+
+    public List<UserEntity> getJunior(String phoneNumber){
+        return userMapper.getJuniorByLeader(phoneNumber);
     }
 }

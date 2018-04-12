@@ -8,6 +8,8 @@ import pers.sdulxt.inspect.service.TokenService;
 import pers.sdulxt.inspect.service.UserService;
 import pers.sdulxt.inspect.util.ValidateUtils;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -34,6 +36,23 @@ public class UserController {
         // Check token
         if(tokenService.checkValidity(pn, token))
             return new Response<>(userService.getUser(phoneNumber));
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+    }
+
+    @GetMapping("/junior")
+    public Response<List<UserEntity>> getJunior(@RequestParam String phoneNumber, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        // Validating
+        if(ValidateUtils.checkNull(phoneNumber)){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token))
+            return new Response<>(userService.getJunior(phoneNumber));
         else
             return new Response<>(Response.Code.TOKEN_EXPIRED);
     }

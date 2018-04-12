@@ -3,14 +3,15 @@ package pers.sdulxt.inspect.service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pers.sdulxt.inspect.entity.TaskEntity;
 import pers.sdulxt.inspect.mapper.TaskMapper;
 import pers.sdulxt.inspect.mapper.TaskdeviceMapper;
 import pers.sdulxt.inspect.model.Constant;
 import pers.sdulxt.inspect.model.Response;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,17 +64,30 @@ public class TaskService {
         return result;
     }
 
-    public Response.Code updateTaskState(int id, String pn, TaskEntity.State state){
+    @Transactional
+    public Response.Code updateTaskState(int id, String pn, TaskEntity.State state) {
         if(taskMapper.getAssigneeById(id).equals(pn)){
-            try{
-                taskMapper.updateState(id, state.toString());
-                return Response.Code.SUCCESS;
-            }catch (DataAccessException e){
-                return Response.Code.RESOURCE_NOT_FOUND;
-            }
+            taskMapper.updateState(id, state.toString());
+            return Response.Code.SUCCESS;
         }else{
             return Response.Code.ACCESS_REJECT;
         }
+    }
+
+    @Transactional
+    public int createTask(String title, String description, String assignee, Date dueTime, List<Integer> devices, String pn){
+        TaskEntity task = new TaskEntity();
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setAssignee(assignee);
+        task.setDueTime(dueTime);
+        task.setCreator(pn);
+
+        taskMapper.insertTask(task);
+        for(int device : devices){
+            taskdeviceMapper.insertTaskdevice(task.getId(), device);
+        }
+        return task.getId();
     }
 
 }

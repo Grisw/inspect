@@ -1,6 +1,7 @@
 package pers.sdulxt.inspect.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.*;
 import pers.sdulxt.inspect.entity.TaskEntity;
 import pers.sdulxt.inspect.model.Response;
@@ -78,8 +79,13 @@ public class TaskController {
         }
 
         // Check token
-        if(tokenService.checkValidity(pn, token))
-            return new Response<>(taskService.updateTaskState(id, pn, state));
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(taskService.updateTaskState(id, pn, state));
+            }catch (DataAccessException e){
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
         else
             return new Response<>(Response.Code.TOKEN_EXPIRED);
     }
@@ -89,7 +95,7 @@ public class TaskController {
         String title = (String) params.get("title");
         String description = (String) params.get("description");
         String assignee = (String) params.get("assignee");
-        Date dueTime = null;
+        Date dueTime;
         try {
             dueTime = params.get("dueTime") == null ? null : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).parse((String) params.get("dueTime"));
         } catch (ParseException e) {
@@ -98,6 +104,24 @@ public class TaskController {
         @SuppressWarnings("unchecked")
         List<Integer> devices = (List<Integer>) params.get("devices");
 
-        return new Response<>(Response.Code.SUCCESS);
+        // Validating
+        if(ValidateUtils.checkNull(title, description, assignee, devices)){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(taskService.createTask(title, description, assignee, dueTime, devices, pn));
+            }catch (DataAccessException e){
+                e.printStackTrace();
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
     }
 }

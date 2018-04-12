@@ -30,7 +30,6 @@ public class TaskEntity {
     private String creator;
     private String creatorName;
     private String assigneeName;
-    private Integer parent;
     private List<TaskdeviceEntity> devices;
 
     public int getId() {
@@ -119,14 +118,6 @@ public class TaskEntity {
 
     public void setDevices(List<TaskdeviceEntity> devices) {
         this.devices = devices;
-    }
-
-    public Integer getParent() {
-        return parent;
-    }
-
-    public void setParent(Integer parent) {
-        this.parent = parent;
     }
 
 }
