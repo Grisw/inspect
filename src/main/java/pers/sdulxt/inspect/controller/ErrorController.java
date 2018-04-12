@@ -47,9 +47,9 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
 
         switch (response.getStatus()){
             case 400:
-                return new Response<>(Response.Code.PARAMS_REQUIRED);
+                return new Response<>(Response.Code.PARAMS_ERROR);
             case 404:
-                return new Response<>(Response.Code.UNKNOWN_REQUEST);
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
         }
 
         return new Response<>(Response.Code.UNKNOWN_ERROR);

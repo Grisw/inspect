@@ -25,7 +25,7 @@ public class UserController {
     public Response<UserEntity> getUser(@RequestParam String phoneNumber, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
         // Validating
         if(ValidateUtils.checkNull(phoneNumber)){
-            return new Response<>(Response.Code.PARAMS_REQUIRED);
+            return new Response<>(Response.Code.PARAMS_ERROR);
         }
         if(ValidateUtils.checkNull(pn, token)){
             return new Response<>(Response.Code.TOKEN_EXPIRED);

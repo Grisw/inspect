@@ -26,7 +26,7 @@ public class TokenController {
 
         // Validating
         if(ValidateUtils.checkNull(phoneNumber, password)){
-            return new Response<>(Response.Code.PARAMS_REQUIRED);
+            return new Response<>(Response.Code.PARAMS_ERROR);
         }
 
         // Processing

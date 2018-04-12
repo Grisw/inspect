@@ -57,7 +57,7 @@ public class TokenService {
      */
     public boolean checkValidity(String phoneNumber, String tokenString){
         if(Constant.DEBUG){
-            if(phoneNumber.equals("0") && tokenString.equals("0")){
+            if(phoneNumber.equals("00000000000") && tokenString.equals("0")){
                 log.info("Use super TOKEN!");
                 return true;
             }

@@ -1,6 +1,7 @@
 package pers.sdulxt.inspect.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class TaskEntity {
 
@@ -29,6 +30,8 @@ public class TaskEntity {
     private String creator;
     private String creatorName;
     private String assigneeName;
+    private Integer parent;
+    private List<TaskdeviceEntity> devices;
 
     public int getId() {
         return id;
@@ -108,6 +111,22 @@ public class TaskEntity {
 
     public void setAssigneeName(String assigneeName) {
         this.assigneeName = assigneeName;
+    }
+
+    public List<TaskdeviceEntity> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(List<TaskdeviceEntity> devices) {
+        this.devices = devices;
+    }
+
+    public Integer getParent() {
+        return parent;
+    }
+
+    public void setParent(Integer parent) {
+        this.parent = parent;
     }
 
 }

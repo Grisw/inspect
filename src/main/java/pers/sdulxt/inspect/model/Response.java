@@ -16,9 +16,11 @@ public class Response<T> implements Serializable{
         UNKNOWN_ERROR(-1, "Unknown error."),
         SUCCESS(0, "Success."),
         WRONG_CREDENTIALS(11, "Wrong password or non-existent account."),
-        PARAMS_REQUIRED(100, "Some required parameters not found."),
+        PARAMS_ERROR(100, "Some required parameters are not found or in bad format."),
         TOKEN_EXPIRED(200, "The token is expired, requires login."),
-        UNKNOWN_REQUEST(300, "Unknown request.");
+        UNKNOWN_REQUEST(300, "Unknown request."),
+        ACCESS_REJECT(400, "You have no access to the resource."),
+        RESOURCE_NOT_FOUND(404, "The requested resource is not found.");
 
         private int code;
         private String message;
