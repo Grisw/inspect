@@ -90,4 +90,10 @@ public class TaskService {
         return task.getId();
     }
 
+    @Transactional
+    public Date updateTaskDevice(int taskId, int deviceId, boolean checked, String picture) {
+        Date date = new Date();
+        taskdeviceMapper.updateTaskDevice(taskId, deviceId, checked, picture, date);
+        return date;
+    }
 }

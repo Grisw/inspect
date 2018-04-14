@@ -121,4 +121,32 @@ public class TaskController {
         else
             return new Response<>(Response.Code.TOKEN_EXPIRED);
     }
+
+    @PostMapping("/device")
+    public Response<Date> updateTaskDevice(@RequestBody Map<String, Object> params, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        Boolean checked = (Boolean) params.get("checked");
+        Integer taskId = (Integer) params.get("taskId");
+        Integer deviceId = (Integer) params.get("deviceId");
+        String picture = (String) params.get("picture");
+
+        // Validating
+        if(ValidateUtils.checkNull(checked, taskId, deviceId)){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(taskService.updateTaskDevice(taskId, deviceId, checked, picture));
+            }catch (DataAccessException e){
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+    }
+
 }

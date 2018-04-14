@@ -1,6 +1,5 @@
 package pers.sdulxt.inspect.entity;
 
-import java.util.Base64;
 import java.util.Date;
 
 public class TaskdeviceEntity {
@@ -9,7 +8,7 @@ public class TaskdeviceEntity {
     private int deviceId;
     private boolean checked;
     private Date checkedTime;
-    private byte[] picture;
+    private String picture;
     private String name;
     private String description;
     private double latitude;
@@ -37,16 +36,6 @@ public class TaskdeviceEntity {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
-    }
-
-    public String getPicture() {
-        if(picture == null)
-            return null;
-        return Base64.getEncoder().encodeToString(picture);
-    }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
     }
 
     public String getName() {
@@ -87,5 +76,13 @@ public class TaskdeviceEntity {
 
     public void setCheckedTime(Date checkedTime) {
         this.checkedTime = checkedTime;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }
