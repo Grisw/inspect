@@ -114,7 +114,6 @@ public class TaskController {
             try{
                 return new Response<>(taskService.createTask(title, description, assignee, dueTime, devices, pn));
             }catch (DataAccessException e){
-                e.printStackTrace();
                 return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
             }
         }

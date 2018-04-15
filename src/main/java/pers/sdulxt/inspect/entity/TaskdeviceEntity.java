@@ -1,6 +1,7 @@
 package pers.sdulxt.inspect.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class TaskdeviceEntity {
 
@@ -13,6 +14,7 @@ public class TaskdeviceEntity {
     private String description;
     private double latitude;
     private double longitude;
+    private List<IssueEntity> issues;
 
     public int getTaskId() {
         return taskId;
@@ -84,5 +86,13 @@ public class TaskdeviceEntity {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public List<IssueEntity> getIssues() {
+        return issues;
+    }
+
+    public void setIssues(List<IssueEntity> issues) {
+        this.issues = issues;
     }
 }

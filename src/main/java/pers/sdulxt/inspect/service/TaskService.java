@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.sdulxt.inspect.entity.TaskEntity;
 import pers.sdulxt.inspect.mapper.TaskMapper;
-import pers.sdulxt.inspect.mapper.TaskdeviceMapper;
 import pers.sdulxt.inspect.model.Constant;
 import pers.sdulxt.inspect.model.Response;
 
@@ -19,13 +18,13 @@ import java.util.Map;
 @Service
 public class TaskService {
     private final TaskMapper taskMapper;
-    private final TaskdeviceMapper taskdeviceMapper;
+    private final TaskdeviceService taskdeviceService;
     private Log log;
 
     @Autowired
-    public TaskService(TaskMapper taskMapper, TaskdeviceMapper taskdeviceMapper) {
+    public TaskService(TaskMapper taskMapper, TaskdeviceService taskdeviceService) {
         this.taskMapper = taskMapper;
-        this.taskdeviceMapper = taskdeviceMapper;
+        this.taskdeviceService = taskdeviceService;
         if(Constant.DEBUG){
             log = LogFactory.getLog(getClass().getName());
         }
@@ -40,7 +39,7 @@ public class TaskService {
     public List<TaskEntity> getTasks(String assignee, TaskEntity.State state){
         List<TaskEntity> entities = taskMapper.getTasksByAssignee(assignee, state.toString());
         for(TaskEntity entity : entities){
-            entity.setDevices(taskdeviceMapper.getDevicesByTask(entity.getId()));
+            entity.setDevices(taskdeviceService.getTaskdevicesByTask(entity.getId()));
         }
         return entities;
     }
@@ -85,15 +84,13 @@ public class TaskService {
 
         taskMapper.insertTask(task);
         for(int device : devices){
-            taskdeviceMapper.insertTaskdevice(task.getId(), device);
+            taskdeviceService.createTaskDevice(task.getId(), device);
         }
         return task.getId();
     }
 
     @Transactional
     public Date updateTaskDevice(int taskId, int deviceId, boolean checked, String picture) {
-        Date date = new Date();
-        taskdeviceMapper.updateTaskDevice(taskId, deviceId, checked, picture, date);
-        return date;
+        return taskdeviceService.updateTaskDevice(taskId, deviceId, checked, picture);
     }
 }
