@@ -51,4 +51,28 @@ public class IssueController {
             return new Response<>(Response.Code.TOKEN_EXPIRED);
     }
 
+    @PostMapping("/close")
+    public Response<Void> closeIssue(@RequestBody Map<String, Object> params, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        Integer id = (Integer) params.get("id");
+
+        // Validating
+        if(ValidateUtils.checkNull(id)){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(issueService.closeIssue(id));
+            }catch (DataAccessException e){
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+    }
+
 }

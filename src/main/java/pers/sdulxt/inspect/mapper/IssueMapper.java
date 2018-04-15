@@ -1,9 +1,6 @@
 package pers.sdulxt.inspect.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 import pers.sdulxt.inspect.entity.IssueEntity;
 
@@ -18,5 +15,8 @@ public interface IssueMapper {
     @Insert("insert into issue (`taskId`, `deviceId`, `picture`, `description`, `title`, `creator`) values (#{taskId}, #{deviceId}, #{picture}, #{description}, #{title}, #{creator})")
     @Options(useGeneratedKeys = true)
     void insertIssue(IssueEntity issueEntity);
+
+    @Update("update issue set state='C' where id=#{id}")
+    void closeIssue(@Param("id") int id);
 
 }

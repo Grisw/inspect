@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pers.sdulxt.inspect.entity.IssueEntity;
 import pers.sdulxt.inspect.mapper.IssueMapper;
 import pers.sdulxt.inspect.model.Constant;
+import pers.sdulxt.inspect.model.Response;
 
 import java.util.List;
 
@@ -41,4 +42,11 @@ public class IssueService {
         issueMapper.insertIssue(entity);
         return entity.getId();
     }
+
+    @Transactional
+    public Response.Code closeIssue(int id){
+        issueMapper.closeIssue(id);
+        return Response.Code.SUCCESS;
+    }
+
 }

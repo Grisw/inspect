@@ -3,6 +3,18 @@ package pers.sdulxt.inspect.entity;
 import java.util.Date;
 
 public class IssueEntity {
+
+    public enum State{
+        /**
+         * Open
+         */
+        O,
+        /**
+         * Close
+         */
+        C
+    }
+
     private int id;
     private int deviceId;
     private Integer taskId;
@@ -12,6 +24,7 @@ public class IssueEntity {
     private String creator;
     private String creatorName;
     private Date publishTime;
+    private State state;
 
     public int getId() {
         return id;
@@ -84,4 +97,13 @@ public class IssueEntity {
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
     }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
 }
