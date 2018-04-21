@@ -19,4 +19,7 @@ public interface IssueMapper {
     @Update("update issue set state='C' where id=#{id}")
     void closeIssue(@Param("id") int id);
 
+    @Select("select * from view_issue where deviceId = #{deviceId}")
+    List<IssueEntity> getIssuesByDevice(@Param("deviceId") int deviceId);
+
 }

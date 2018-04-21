@@ -29,6 +29,10 @@ public class IssueService {
         return issueMapper.getIssuesByTaskDevice(taskId, deviceId);
     }
 
+    public List<IssueEntity> getIssuesByDevice(int deviceId){
+        return issueMapper.getIssuesByDevice(deviceId);
+    }
+
     @Transactional
     public int createIssue(int deviceId, Integer taskId, String title, String description, String picture, String pn){
         IssueEntity entity = new IssueEntity();

@@ -1,11 +1,14 @@
 package pers.sdulxt.inspect.entity;
 
+import java.util.List;
+
 public class DeviceEntity {
     private int id;
     private String name;
     private String description;
     private double latitude;
     private double longitude;
+    private List<IssueEntity> issues;
 
     public int getId() {
         return id;
@@ -45,5 +48,13 @@ public class DeviceEntity {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public List<IssueEntity> getIssues() {
+        return issues;
+    }
+
+    public void setIssues(List<IssueEntity> issues) {
+        this.issues = issues;
     }
 }
