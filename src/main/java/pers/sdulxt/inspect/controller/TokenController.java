@@ -37,4 +37,17 @@ public class TokenController {
             return new Response<>(token);
     }
 
+    @DeleteMapping
+    public Response<Void> delete(@RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        // Validating
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token))
+            return new Response<>(tokenService.deleteToken(pn));
+        else
+            return new Response<>(Response.Code.SUCCESS);
+    }
 }

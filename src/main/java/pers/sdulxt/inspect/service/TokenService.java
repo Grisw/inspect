@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pers.sdulxt.inspect.entity.AccountEntity;
 import pers.sdulxt.inspect.mapper.AccountMapper;
 import pers.sdulxt.inspect.model.Constant;
+import pers.sdulxt.inspect.model.Response;
 import pers.sdulxt.inspect.model.Token;
 import pers.sdulxt.inspect.util.MD5Utils;
 
@@ -69,6 +70,11 @@ public class TokenService {
             tokens.remove(phoneNumber);
             return false;
         }
+    }
+
+    public Response.Code deleteToken(String pn){
+        tokens.remove(pn);
+        return Response.Code.SUCCESS;
     }
 
     /**
