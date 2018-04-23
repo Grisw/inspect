@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pers.sdulxt.inspect.entity.AccountEntity;
 import pers.sdulxt.inspect.mapper.AccountMapper;
 import pers.sdulxt.inspect.model.Constant;
@@ -75,6 +76,16 @@ public class TokenService {
     public Response.Code deleteToken(String pn){
         tokens.remove(pn);
         return Response.Code.SUCCESS;
+    }
+
+    @Transactional
+    public Response.Code changePassword(String pn, String password, String oldPassword){
+        if(checkAccount(pn, oldPassword)){
+            accountMapper.changePassword(pn, password);
+            return Response.Code.SUCCESS;
+        }else{
+            return Response.Code.WRONG_CREDENTIALS;
+        }
     }
 
     /**

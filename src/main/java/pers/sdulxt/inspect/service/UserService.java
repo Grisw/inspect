@@ -4,9 +4,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pers.sdulxt.inspect.entity.UserEntity;
 import pers.sdulxt.inspect.mapper.UserMapper;
 import pers.sdulxt.inspect.model.Constant;
+import pers.sdulxt.inspect.model.Response;
 
 import java.util.List;
 
@@ -34,5 +36,11 @@ public class UserService {
 
     public List<UserEntity> getJunior(String phoneNumber){
         return userMapper.getJuniorByLeader(phoneNumber);
+    }
+
+    @Transactional
+    public Response.Code updateEmail(String pn, String email){
+        userMapper.updateEmail(pn, email);
+        return Response.Code.SUCCESS;
     }
 }

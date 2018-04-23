@@ -1,6 +1,7 @@
 package pers.sdulxt.inspect.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.*;
 import pers.sdulxt.inspect.model.Response;
 import pers.sdulxt.inspect.service.TokenService;
@@ -45,9 +46,39 @@ public class TokenController {
         }
 
         // Check token
-        if(tokenService.checkValidity(pn, token))
-            return new Response<>(tokenService.deleteToken(pn));
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(tokenService.deleteToken(pn));
+            }catch (DataAccessException e){
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
         else
-            return new Response<>(Response.Code.SUCCESS);
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+    }
+
+    @PostMapping("/password")
+    public Response<Void> changePassword(@RequestBody Map<String, String> params, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        String oldPassword = params.get("oldPassword");
+        String password = params.get("password");
+
+        // Validating
+        if(ValidateUtils.checkNull(oldPassword, password)){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(tokenService.changePassword(pn, password, oldPassword));
+            }catch (DataAccessException e){
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
     }
 }
