@@ -1,5 +1,6 @@
 package pers.sdulxt.inspect.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -15,4 +16,6 @@ public interface AccountMapper {
     @Update("update account set password=#{password} where phoneNumber = #{phoneNumber}")
     void changePassword(@Param("phoneNumber") String phoneNumber, @Param("password") String password);
 
+    @Insert("insert into account (`phoneNumber`, `password`) values (#{phoneNumber}, #{password})")
+    void insertAccount(AccountEntity accountEntity);
 }

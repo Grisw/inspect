@@ -9,7 +9,11 @@ import pers.sdulxt.inspect.service.TokenService;
 import pers.sdulxt.inspect.service.UserService;
 import pers.sdulxt.inspect.util.ValidateUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -77,6 +81,73 @@ public class UserController {
                 return new Response<>(userService.updateEmail(pn, email));
             }catch (DataAccessException e){
                 return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+    }
+
+    @PostMapping("/birthday")
+    public Response<Void> changeBirthday(@RequestBody Map<String, String> params, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        Date birthday;
+        try {
+            birthday = params.get("birthday") == null ? null : new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(params.get("birthday"));
+        } catch (ParseException e) {
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+
+        // Validating
+        if(ValidateUtils.checkNull(birthday)){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(userService.updateBirthday(pn, birthday));
+            }catch (DataAccessException e){
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+    }
+
+    @PutMapping
+    public Response<Void> createUser(@RequestBody Map<String, Object> params, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        String name = (String) params.get("name");
+        String phone = (String) params.get("phone");
+        UserEntity.Sex sex;
+        try {
+            sex = UserEntity.Sex.valueOf((String) params.get("sex"));
+        }catch (IllegalArgumentException e){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        Date birthday;
+        try {
+            birthday = params.get("birthday") == null ? null : new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse((String) params.get("birthday"));
+        } catch (ParseException e) {
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        String email = params.get("email") == null ? null : (String) params.get("email");
+
+        // Validating
+        if(ValidateUtils.checkNull(name, phone, sex)){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(userService.createUser(name, phone, sex, birthday, email, pn));
+            }catch (DataAccessException e){
+                return new Response<>(Response.Code.USER_EXISTS);
             }
         }
         else

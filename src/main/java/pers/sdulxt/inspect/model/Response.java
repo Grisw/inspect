@@ -16,6 +16,7 @@ public class Response<T> implements Serializable{
         UNKNOWN_ERROR(-1, "Unknown error."),
         SUCCESS(0, "Success."),
         WRONG_CREDENTIALS(11, "Wrong password or non-existent account."),
+        USER_EXISTS(12, "The phone number was already exists."),
         PARAMS_ERROR(100, "Some required parameters are not found or in bad format."),
         TOKEN_EXPIRED(200, "The token is expired, requires login."),
         UNKNOWN_REQUEST(300, "Unknown request."),
