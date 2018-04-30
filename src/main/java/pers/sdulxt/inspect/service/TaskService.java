@@ -67,6 +67,14 @@ public class TaskService {
     public Response.Code updateTaskState(int id, String pn, TaskEntity.State state) {
         if(taskMapper.getAssigneeById(id).equals(pn)){
             taskMapper.updateState(id, state.toString());
+            switch (state){
+                case D:
+                    taskMapper.updateStartTime(id, new Date());
+                    break;
+                case E:
+                    taskMapper.updateEndTime(id, new Date());
+                    break;
+            }
             return Response.Code.SUCCESS;
         }else{
             return Response.Code.ACCESS_REJECT;

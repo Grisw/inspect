@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 import pers.sdulxt.inspect.entity.TaskEntity;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,12 @@ public interface TaskMapper {
 
     @Update("update task set state=#{state} where id=#{id}")
     void updateState(@Param("id") int id, @Param("state") String state);
+
+    @Update("update task set startTime=#{startTime} where id=#{id}")
+    void updateStartTime(@Param("id") int id, @Param("startTime") Date startTime);
+
+    @Update("update task set endTime=#{endTime} where id=#{id}")
+    void updateEndTime(@Param("id") int id, @Param("endTime") Date endTime);
 
     @Update("update task set assignee=#{assignee} where id=#{id}")
     void updateAssignee(@Param("id") int id, @Param("assignee") String assignee);

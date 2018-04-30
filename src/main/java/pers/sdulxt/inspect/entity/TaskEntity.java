@@ -31,6 +31,8 @@ public class TaskEntity {
     private String creatorName;
     private String assigneeName;
     private List<TaskdeviceEntity> devices;
+    private Date startTime;
+    private Date endTime;
 
     public int getId() {
         return id;
@@ -118,6 +120,22 @@ public class TaskEntity {
 
     public void setDevices(List<TaskdeviceEntity> devices) {
         this.devices = devices;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
 }
