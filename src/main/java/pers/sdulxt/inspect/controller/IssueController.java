@@ -4,66 +4,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.*;
 import pers.sdulxt.inspect.model.Response;
+import pers.sdulxt.inspect.service.IssueService;
 import pers.sdulxt.inspect.service.TokenService;
 import pers.sdulxt.inspect.util.ValidateUtils;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/token")
-public class TokenController {
+@RequestMapping("/issue")
+public class IssueController {
 
+    private final IssueService issueService;
     private final TokenService tokenService;
 
     @Autowired
-    public TokenController(TokenService tokenService) {
+    public IssueController(IssueService issueService, TokenService tokenService) {
+        this.issueService = issueService;
         this.tokenService = tokenService;
     }
 
-    @PostMapping
-    public Response<String> token(@RequestBody Map<String, String> params){
-        String phoneNumber = params.get("phoneNumber");
-        String password = params.get("password");
+    @PutMapping
+    public Response<Integer> createIssue(@RequestBody Map<String, Object> params, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        String title = (String) params.get("title");
+        String description = (String) params.get("description");
+        int deviceId = (int) params.get("deviceId");
+        Integer taskId = (Integer) params.get("taskId");
+        String picture = (String) params.get("picture");
 
         // Validating
-        if(ValidateUtils.checkNull(phoneNumber, password)){
-            return new Response<>(Response.Code.PARAMS_ERROR);
-        }
-
-        // Processing
-        String token = tokenService.login(phoneNumber, password);
-        if(token == null)
-            return new Response<>(Response.Code.WRONG_CREDENTIALS);
-        else
-            return new Response<>(token);
-    }
-
-    @DeleteMapping
-    public Response<Void> delete(@RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
-        // Validating
-        if(ValidateUtils.checkNull(pn, token)){
-            return new Response<>(Response.Code.TOKEN_EXPIRED);
-        }
-
-        // Check token
-        if(tokenService.checkValidity(pn, token)){
-            try{
-                return new Response<>(tokenService.deleteToken(pn));
-            }catch (DataAccessException e){
-                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
-            }
-        }
-        else
-            return new Response<>(Response.Code.TOKEN_EXPIRED);
-    }
-
-    @PostMapping("/password")
-    public Response<Void> changePassword(@RequestBody Map<String, String> params, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
-        String oldPassword = params.get("oldPassword");
-        String password = params.get("password");
-
-        // Validating
-        if(ValidateUtils.checkNull(oldPassword, password)){
+        if(ValidateUtils.checkNull(title, description, taskId)){
             return new Response<>(Response.Code.PARAMS_ERROR);
         }
         if(ValidateUtils.checkNull(pn, token)){
@@ -73,7 +42,7 @@ public class TokenController {
         // Check token
         if(tokenService.checkValidity(pn, token)){
             try{
-                return new Response<>(tokenService.changePassword(pn, password, oldPassword));
+                return new Response<>(issueService.createIssue(deviceId, taskId, title, description, picture, pn));
             }catch (DataAccessException e){
                 return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
             }
@@ -81,4 +50,29 @@ public class TokenController {
         else
             return new Response<>(Response.Code.TOKEN_EXPIRED);
     }
+
+    @PostMapping("/close")
+    public Response<Void> closeIssue(@RequestBody Map<String, Object> params, @RequestHeader("X-INSPECT-PN") String pn, @RequestHeader("X-INSPECT-TOKEN") String token){
+        Integer id = (Integer) params.get("id");
+
+        // Validating
+        if(ValidateUtils.checkNull(id)){
+            return new Response<>(Response.Code.PARAMS_ERROR);
+        }
+        if(ValidateUtils.checkNull(pn, token)){
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+        }
+
+        // Check token
+        if(tokenService.checkValidity(pn, token)){
+            try{
+                return new Response<>(issueService.closeIssue(id));
+            }catch (DataAccessException e){
+                return new Response<>(Response.Code.RESOURCE_NOT_FOUND);
+            }
+        }
+        else
+            return new Response<>(Response.Code.TOKEN_EXPIRED);
+    }
+
 }
