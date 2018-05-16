@@ -47,7 +47,9 @@ public class TokenService {
         // put token into map.
         tokens.put(phoneNumber, token);
 
-        log.info("Login: " + phoneNumber + "|" + tokenString);
+        if(Constant.DEBUG) {
+            log.info("Login: " + phoneNumber + "|" + tokenString);
+        }
         return tokenString;
     }
 
